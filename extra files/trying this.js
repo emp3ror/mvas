@@ -1,3 +1,14 @@
+/*!
+ * by : manish jung thapa
+ * http://mjt.com.com/
+ *
+ * Copyright 2015 MJT and other contributors
+ * Released under the Apache license
+ * https://github.com/emp3ror/mvas/blob/master/LICENSE
+ *
+ * Date: 2015-28-01T3:00PM UTC+5:30
+ */
+
 (function ($) {
 	console.log(typeof $);
 	var $board = $('.board'),

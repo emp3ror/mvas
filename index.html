@@ -13,9 +13,11 @@ hello world
   ctx = this.canvas.getContext("2d");
 
   var newCanvas = mVas.setCanvas(canvas);
-  ctx2 = newCanvas.getContext();
-  console.log(ctx);
-  console.log(ctx2);
+  newCanvas.gridColumn(20);
+  var smValue = newCanvas.gridColumn();
+  console.log(smValue);
+
+
 
   console.log("*************new test*************");
   var apple = mVas.text("hello apple",{help:"smth"});
