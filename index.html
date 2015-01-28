@@ -6,8 +6,25 @@
 hello world
 <script src="src/mvas.0.1.js"></script>
 <script type="text/javascript">
-  mvas.greet();
-  console.log(mVas.hello);
+  // mvas.greet();
+  console.log(mVas());
+
+  // mVas.helloNew();
+  var smth = mVas("smth");
+  smth.setText("hello world");
+  var newSth = mVas("newSth");
+  newSth.setText("hello new world");
+  smth.getText();
+  newSth.getText();
+  newSth.setText("hello new world changed");
+  console.log("*************new test*************");
+  newSth.setParent(".id");
+  var apple = mVas.text("hello apple");
+  console.log(apple.getText());
+  var mango = newSth.getParent();
+  console.log(mango);
+  console.log(newSth.getParent());
+  console.log(newSth.getText());
 </script>
 </body>
 </html>
