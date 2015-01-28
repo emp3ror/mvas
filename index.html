@@ -13,11 +13,9 @@ hello world
   ctx = this.canvas.getContext("2d");
 
   var newCanvas = mVas.setCanvas(canvas);
-  newCanvas.gridColumn(20);
-  var smValue = newCanvas.gridColumn();
+  newCanvas.gridVisibility("columns");
+  var smValue = newCanvas.gridVisibility();
   console.log(smValue);
-
-
 
   console.log("*************new test*************");
   var apple = mVas.text("hello apple",{help:"smth"});

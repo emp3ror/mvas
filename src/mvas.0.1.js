@@ -144,6 +144,21 @@
             }
         },
 
+        /*sets gridVisibitiy if provide else shows the condition */
+        gridVisibility : function (v) {
+            if (typeof v === "string") {
+                if (v =="none" || v === "all" || v ==="rows" || v==="columns") {
+                    grid.visible=v;
+                } else {
+                    console.log("available values are only 'none' 'all' 'rows' 'columns'");
+                }
+            } else if (typeof v === "undefined") {
+                return grid.visible;
+            } else {
+                console.log("available values are only 'none' 'all' 'rows' 'columns' \n or to see the value provide empty");
+            }
+        },
+
 
         //set text to the obj
         text : function (txt,properties) {
