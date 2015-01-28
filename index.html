@@ -4,27 +4,22 @@
 </head>
 <body>
 hello world
+<div id="canvas">
+  <canvas id="thecanvas" width="200px" height="200px"></canvas>
+</div>
 <script src="src/mvas.0.1.js"></script>
 <script type="text/javascript">
-  // mvas.greet();
-  console.log(mVas());
+  canvas = document.getElementById("thecanvas");
+  ctx = this.canvas.getContext("2d");
 
-  // mVas.helloNew();
-  var smth = mVas("smth");
-  smth.setText("hello world");
-  var newSth = mVas("newSth");
-  newSth.setText("hello new world");
-  smth.getText();
-  newSth.getText();
-  newSth.setText("hello new world changed");
+  var newCanvas = mVas.setCanvas(canvas);
+  ctx2 = newCanvas.getContext();
+  console.log(ctx);
+  console.log(ctx2);
+
   console.log("*************new test*************");
-  newSth.setParent(".id");
-  var apple = mVas.text("hello apple");
-  console.log(apple.getText());
-  var mango = newSth.getParent();
-  console.log(mango);
-  console.log(newSth.getParent());
-  console.log(newSth.getText());
+  var apple = mVas.text("hello apple",{help:"smth"});
+  apple.textProperties({help:"smth"});
 </script>
 </body>
 </html>
