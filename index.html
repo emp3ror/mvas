@@ -5,7 +5,7 @@
 <body>
 hello world
 <div id="canvas">
-  <canvas id="thecanvas" width="200px" height="200px"></canvas>
+  <canvas id="thecanvas" width="500px" height="500px"></canvas>
 </div>
 <script src="src/mvas.0.1.js"></script>
 <script type="text/javascript">
@@ -13,13 +13,18 @@ hello world
   ctx = this.canvas.getContext("2d");
 
   var newCanvas = mVas.setCanvas(canvas);
-  newCanvas.gridVisibility("columns");
-  var smValue = newCanvas.gridVisibility();
-  console.log(smValue);
+  newCanvas.gridShowBoxLength(10);
+  var smValue = newCanvas.gridShowBoxLength();
+  /*console.log(smValue);
 
-  console.log("*************new test*************");
+  console.log("*************new test*************");*/
   var apple = mVas.text("hello apple",{help:"smth"});
-  apple.textProperties({help:"smth"});
+  var ball = mVas.text("hello ball",{help:"smth"});
+  newCanvas.add(apple,100,1);
+  newCanvas.add(ball,0,10);
+  window.onload=function(){
+    newCanvas.draw();
+  }
 </script>
 </body>
 </html>

@@ -35,6 +35,7 @@
         * columns/column = show only columns
         */
         visible : "none",
+        showBoxLength : 1
     }
 
     /*sets length of small sq box of grid according to width of canvas and columns provided*/
@@ -64,6 +65,8 @@
     }
 
     mVas.fn = mVas.prototype = {
+
+        drawArray : [],
         //init get id and set canvas and context (ctx)
         //parent is to set dimension of canvas be equal to parents, more like making responsive
         init : function (id,parent) {
@@ -81,17 +84,19 @@
         //getCanvas to use context properties off the library
         getContext : function () {
             this.ctx = this.ctx ? this.ctx : this.canvas.getContext("2d");
+
             return this.ctx;
         },
         //setCanvas to get canvas defined off the library
         setCanvas : function (canvas) {
             this.canvas=canvas;
+            this.ctx = this.getContext();
             console.log(this.canvas);
         },
         //setCanvas to get context defined off the library
         setContext : function (ctx) {
             this.ctx=ctx;
-            console.log(this.ctx);
+            // console.log(this.ctx);
         },
 
         /*grid starts*/
@@ -109,7 +114,7 @@
         */
         gridSquareBox : function (length) {
             // console.log(typeof length);
-            if (typeof length === 'number') {
+            if (typeof length === 'number' && num >0) {
                 if (length != parseInt(length)) {
                     console.log("please dont provide pixel length in float");
                     return false;
@@ -119,17 +124,17 @@
             } else if (typeof length === 'undefined') {
                 return grid.boxlength;
             } else {
-                console.log("please provide integer value");
+                console.log("please provide positive integer value");
                 return false;
             }
         },
 
         /* sets the numbers column of the grid, when num is provided,
-        *   and it changes the grid Square Box size too,
+        *  and it changes the grid Square Box size too,
         *  if num is not provided it returns the column of grid (value)
         */
         gridColumn : function (num) {
-            if (typeof num === 'number') {
+            if (typeof num === 'number' && num >0) {
                 if (num != parseInt(num)) {
                     console.log("please dont provide column num in float");
                     return false;
@@ -139,7 +144,24 @@
             } else if (typeof num === 'undefined') {
                 return grid.columns;
             } else {
-                console.log("please provide integer value");
+                console.log("please provide positive integer value");
+                return false;
+            }
+        },
+
+        /*sets gridShowBoxLength if provide else shows the condition */
+        gridShowBoxLength : function (num) {
+            if (typeof num === 'number' && num > 0) {
+                if (num != parseInt(num)) {
+                    console.log("please dont provide column num in float");
+                    return false;
+                };
+                grid.showBoxLength = num;
+                return true;
+            } else if (typeof num === 'undefined') {
+                return grid.showBoxLength;
+            } else {
+                console.log("please provide positive integer value");
                 return false;
             }
         },
@@ -159,25 +181,24 @@
             }
         },
 
-
         //set text to the obj
         text : function (txt,properties) {
             this.txt = txt;
             if (typeof properties != "undefined") {
                 _self.fn.textProperties(properties);
             };
-
+            var fontSize = 16;
             var canvasText = document.createElement('canvas');
             var ctxText = canvasText.getContext("2d");
-            /*ctxText.clearRect(0,0,canvasText.width,canvasText.height);
-            canvasText.width = canvasText.width;
-            canvasText.height = canvasText.height;
-            ctxText.font=pos(fontSize)+"px Verdana";
-            var widthText = ctxText.measureText(txt).width;
-            textPosX = (rows-widthText/tinyBox)/2; //putting text in the middle
-            ctxText.fillStyle="#fff";
-            ctxText.fillText(txt,0,0);*/
-
+            ctxText.clearRect(0,0,canvasText.width,canvasText.height);
+            canvasText.width = 200;
+            canvasText.height = 200;
+            ctxText.font= fontSize+"px Verdana";
+            // var widthText = ctxText.measureText(txt).width;
+            // textPosX = (rows-widthText/tinyBox)/2; //putting text in the middle
+            ctxText.fillStyle="#000";
+            ctxText.fillText(txt,0,fontSize);
+            return canvasText;
         },
         //setting text properties like fonts etc
         textProperties : function (properties) {
@@ -199,7 +220,33 @@
         },
         getParent : function () {
             return this.parent;
-        }
+        },
+
+        /* filling draw array
+        */
+        add : function (obj,posX,posY) {
+            this.drawArray.push({
+                canvas : obj,
+                x : posX,
+                y : posY});
+            console.log(this.drawArray);
+        },
+
+        /* time to draw on canvas
+        */
+        draw : function () {
+            var drawArray = this.drawArray;
+            var len = drawArray.length;
+            for (var i = 0; i < len; i++) {
+                var theObj = drawArray[i];
+                console.log(theObj.canvas);
+                this.ctx.save();
+                this.ctx.drawImage(theObj.canvas, theObj.x, theObj.y);
+                this.ctx.restore();
+            };
+
+        },
+
     }
 
     /**
