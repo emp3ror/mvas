@@ -222,6 +222,25 @@
             return this.parent;
         },
 
+        /*trying on image*/
+        image : function (img) {
+            var canvasImg = document.createElement('canvas');
+            var ctxImg = canvasImg.getContext("2d");
+            canvasImg.width = 100;
+            canvasImg.height = 100;
+            var newImg = new Image();
+            newImg.onload = function () {
+                ctxImg.drawImage(newImg, 0, 0, 100, 100 );
+            };
+            newImg.src = img;
+            /*ctxImg.fillStyle = "#FF0000";
+            ctxImg.fillRect(0,0,100,100);*/
+            console.log(newImg);
+            console.log(canvasImg);
+            return canvasImg;
+
+        },
+
         /* filling draw array
         */
         add : function (obj,posX,posY) {
@@ -229,22 +248,24 @@
                 canvas : obj,
                 x : posX,
                 y : posY});
-            console.log(this.drawArray);
+            // console.log(this.drawArray);
         },
 
         /* time to draw on canvas
         */
-        draw : function () {
+        draw : function (showConsole) {
             var drawArray = this.drawArray;
             var len = drawArray.length;
             for (var i = 0; i < len; i++) {
                 var theObj = drawArray[i];
-                console.log(theObj.canvas);
+                if (typeof showConsole != 'undefined' && showConsole===true) {
+                    console.log(theObj.canvas);
+                };
+
                 this.ctx.save();
-                this.ctx.drawImage(theObj.canvas, theObj.x, theObj.y);
+                this.ctx.drawImage(theObj.canvas, theObj.x, theObj.y,200,200);
                 this.ctx.restore();
             };
-
         },
 
     }
@@ -269,6 +290,9 @@
     // store text for regular use
     mVas.text = function (text) {
         return new mVas.fn.text(text);
+    }
+    mVas.image = function (img) {
+        return new mVas.fn.image(img);
     }
     //define globally if it doesn't already exist
     if(typeof(window.mVas) === 'undefined'){
