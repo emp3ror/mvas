@@ -4,6 +4,7 @@
 </head>
 <body>
 hello world
+<img src="images/cloudy.png" alt="" width="50px">
 <div id="canvas">
   <canvas id="thecanvas" width="500px" height="500px"></canvas>
 </div>
@@ -17,15 +18,16 @@ hello world
   var smValue = newCanvas.gridShowBoxLength();
   /*console.log(smValue);
   console.log("*************new test*************");*/
-  var cloudy = mVas.image("images/cloudy.png");
-  var apple = mVas.text("hello apple",{help:"smth"});
+  var cloudy = mVas.images("images/cloudy.png");
+  console.log(cloudy);
+  // var apple = mVas.text("hello apple",{help:"smth"});
   var ball = mVas.text("hello ball",{help:"smth"});
-  newCanvas.add(apple,100,1);
-  newCanvas.add(ball,0,10);
+  // newCanvas.add(apple,100,1);
+  // newCanvas.add(ball,0,10);
   // newCanvas.draw();
   newCanvas.add(ball,10,100);
-  newCanvas.add(cloudy,10,100);
-  newCanvas.draw();
+  newCanvas.add(cloudy,100,100);
+  newCanvas.draw(true);
 
 </script>
 </body>

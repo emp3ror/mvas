@@ -198,7 +198,10 @@
             // textPosX = (rows-widthText/tinyBox)/2; //putting text in the middle
             ctxText.fillStyle="#000";
             ctxText.fillText(txt,0,fontSize);
-            return canvasText;
+            return {
+                src : canvasText,
+                type : "text"
+            };
         },
         //setting text properties like fonts etc
         textProperties : function (properties) {
@@ -223,29 +226,22 @@
         },
 
         /*trying on image*/
-        image : function (img) {
-            var canvasImg = document.createElement('canvas');
-            var ctxImg = canvasImg.getContext("2d");
-            canvasImg.width = 100;
-            canvasImg.height = 100;
-            var newImg = new Image();
-            newImg.onload = function () {
-                ctxImg.drawImage(newImg, 0, 0, 100, 100 );
-            };
-            newImg.src = img;
-            /*ctxImg.fillStyle = "#FF0000";
-            ctxImg.fillRect(0,0,100,100);*/
-            console.log(newImg);
-            console.log(canvasImg);
-            return canvasImg;
-
+        images : function (img) {
+            // dont know why img.onload and loading on new canvas didnt work, and returning the canvas like in TEXT function
+            //if anyone have solution, it might be used for buffer :)
+            return {
+                src : img,
+                type : "image",
+                zoom : 1,
+            }
         },
 
         /* filling draw array
         */
         add : function (obj,posX,posY) {
             this.drawArray.push({
-                canvas : obj,
+                src : obj.src,
+                type : obj.type,
                 x : posX,
                 y : posY});
             // console.log(this.drawArray);
@@ -259,16 +255,39 @@
             for (var i = 0; i < len; i++) {
                 var theObj = drawArray[i];
                 if (typeof showConsole != 'undefined' && showConsole===true) {
-                    console.log(theObj.canvas);
+                    console.log(theObj);
                 };
 
-                this.ctx.save();
-                this.ctx.drawImage(theObj.canvas, theObj.x, theObj.y,200,200);
-                this.ctx.restore();
+                var self = this.ctx;
+                self.save();
+                    switch (theObj.type) {
+                        case "text":
+                            drawText(theObj,self);
+                        break;
+
+                        case "image":
+                            drawImage(theObj,self);
+                        break
+                    }
+
+                self.restore();
             };
         },
 
     }
+
+    var drawText = function (obj,self) {
+        self.drawImage(obj.src, obj.x, obj.y,200,200);
+    };
+
+    var drawImage = function (obj,self) {
+        var img = new Image();
+        img.onload = function () {
+            self.drawImage(img, obj.x, obj.y,200,200);
+        }
+        img.src = obj.src;
+
+    };
 
     /**
     *this creates prototype to the init function
@@ -291,8 +310,9 @@
     mVas.text = function (text) {
         return new mVas.fn.text(text);
     }
-    mVas.image = function (img) {
-        return new mVas.fn.image(img);
+    mVas.images = function (img) {
+        return new mVas.fn.images(img);
+        // return "images/cloudy.png";
     }
     //define globally if it doesn't already exist
     if(typeof(window.mVas) === 'undefined'){
