@@ -1,0 +1,61 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<canvas width="500" height="500" id="canvas"></canvas>
+<script type="text/javascript">
+	var particle_count = 100;
+	for(var i = 0; i < particle_count; i++)
+	{
+		// particles.push(new particle());
+		console.log("hellow");
+	}
+	var r = 100;
+	var xy = [];
+	for (var i = 0; i < 360; i++) {
+		// x	=acost;
+		// y	=asint
+		angle= i*22/(7*180);
+		x = r*Math.cos(angle);
+		y = r*Math.sin(angle);
+		xy.push({x : x,y : y});
+	};
+	console.log(xy);
+
+	var canvas = document.getElementById("canvas");
+	var ctx = this.canvas.getContext("2d");
+	w = 500;
+	h = 500;
+
+
+	// for (var i = 0; i < xy.length; i++) {
+	// 	var mm = xy[i];
+	// 	ctx.moveTo(0, 0);
+	// 	ctx.lineTo(mm.x, mm.y);
+	// 	ctx.strokeStyle = '#ff0000';
+	// 	ctx.stroke();
+	// };
+	i = 0;
+	function onCircle () {
+		ctx.clearRect(0,0,w,h);
+		ctx.save();
+		ctx.translate(250,150);
+		var mm = xy[i];
+		ctx.beginPath();
+		ctx.moveTo(0, 0);
+		ctx.lineTo(mm.x, mm.y);
+		ctx.strokeStyle = '#ff0000';
+		ctx.stroke();
+		ctx.restore();
+		i++;
+		if (i>=360) {
+			i=0;
+		}
+
+	}
+	setInterval(onCircle,100);
+</script>
+
+</body>
+</html>

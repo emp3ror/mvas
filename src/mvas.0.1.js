@@ -16,6 +16,10 @@
 
     var _self = this;
 
+    //defining frame rate = frame per second (fps)... default = 25
+    var fps = 25;
+    var timeToChangeFrame = 1000/fps;
+
     //creating default values for font
     var font = {
         textSize : 16, //px
@@ -235,6 +239,21 @@
                 zoom : 1,
             }
         },
+        line : function () {
+            var canvasLine = document.createElement('canvas');
+            var contextLine = canvas.getContext('2d');
+            canvasLine.width = 500;
+            canvasLine.height = 500;
+            contextLine.beginPath();
+            contextLine.moveTo(100, 150);
+            contextLine.lineTo(450, 50);
+            contextLine.lineWidth = 15;
+            // set line color
+            contextLine.strokeStyle = '#ff0000';
+            contextLine.lineCap = 'butt';
+            contextLine.stroke();
+            return canvasLine;
+        },
 
         /* filling draw array
         */
@@ -274,7 +293,11 @@
             };
         },
 
-    }
+        animate : function () {
+
+        }
+
+    };
 
     var drawText = function (obj,self) {
         self.drawImage(obj.src, obj.x, obj.y,200,200);
@@ -298,6 +321,7 @@
     mVas.fn.text.prototype = mVas.fn;
     mVas.fn.setCanvas.prototype = mVas.fn;
     mVas.fn.setContext.prototype = mVas.fn;
+
     mVas.setCanvas = function (canvas) {
         return new mVas.fn.setCanvas(canvas);
     }
@@ -313,7 +337,11 @@
     mVas.images = function (img) {
         return new mVas.fn.images(img);
         // return "images/cloudy.png";
+    };
+    mVas.line = function () {
+        return new mVas.fn.line ();
     }
+
     //define globally if it doesn't already exist
     if(typeof(window.mVas) === 'undefined'){
         window.mvas = window.mVas = mVas;

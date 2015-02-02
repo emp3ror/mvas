@@ -18,15 +18,15 @@ hello world
   var smValue = newCanvas.gridShowBoxLength();
   /*console.log(smValue);
   console.log("*************new test*************");*/
+  var line = mVas.line();
   var cloudy = mVas.images("images/cloudy.png");
   console.log(cloudy);
-  // var apple = mVas.text("hello apple",{help:"smth"});
+  var apple = mVas.text("hello apple",{help:"smth"});
   var ball = mVas.text("hello ball",{help:"smth"});
-  // newCanvas.add(apple,100,1);
-  // newCanvas.add(ball,0,10);
-  // newCanvas.draw();
+  newCanvas.add(apple,100,1);
   newCanvas.add(ball,10,100);
   newCanvas.add(cloudy,100,100);
+  // newCanvas.add(line,100,100);
   newCanvas.draw(true);
 
 </script>
