@@ -4,6 +4,7 @@
 </head>
 <body>
 <canvas width="500" height="500" id="canvas"></canvas>
+<img id="canvasImg" alt="Right click to save me!">
 <script type="text/javascript">
 	var particle_count = 100;
 	for(var i = 0; i < particle_count; i++)
@@ -12,22 +13,26 @@
 		console.log("hellow");
 	}
 	var r = 100;
-	var xy = [];
-	for (var i = 0; i < 360; i++) {
+	var xy1 = [],xy2=[];
+	for (var i = 0; i <=360; i++) {
 		// x	=acost;
 		// y	=asint
 		angle= i*22/(7*180);
 		x = r*Math.cos(angle);
 		y = r*Math.sin(angle);
-		xy.push({x : x,y : y});
+		x1 = 70*Math.cos(angle);
+		y1 = 70*Math.sin(angle);
+		xy1.push({x : x,y : y});
+		xy2.push({x : x1,y : y1});
 	};
-	console.log(xy);
+
+	// console.log(xy1);
 
 	var canvas = document.getElementById("canvas");
 	var ctx = this.canvas.getContext("2d");
 	w = 500;
 	h = 500;
-
+	var dataURL;
 
 	// for (var i = 0; i < xy.length; i++) {
 	// 	var mm = xy[i];
@@ -53,10 +58,11 @@
 	function firstCircle () {
 		ctx.save();
 		ctx.translate(250,150);
-		var mm = xy[i];
+		var mm = xy1[i];
 		ctx.beginPath();
 		ctx.moveTo(0, 0);
 		ctx.lineTo(mm.x, mm.y);
+		ctx.arc(mm.x,mm.y,10,0,2*Math.PI);
 		ctx.strokeStyle = '#ff0000';
 		ctx.stroke();
 		ctx.restore();
@@ -69,20 +75,26 @@
 	function secondCircle () {
 		ctx.save();
 		ctx.translate(250,150);
-		var mm = xy[j];
+		var mm = xy2[j];
 		ctx.beginPath();
 		ctx.moveTo(0, 0);
 		ctx.lineTo(mm.x, mm.y);
 		ctx.strokeStyle = '#00ff00';
-		ctx.lineWidth = "15";
+		ctx.arc(mm.x,mm.y,10,0,2*Math.PI);
+		ctx.lineWidth = "10";
 		ctx.stroke();
 		ctx.restore();
 		// j++;
 		if (j>=359) {
 			j=0;
 		}
+
+		dataURL = canvas.toDataURL();
+		document.getElementById('canvasImg').src = dataURL;
+		console.log(dataURL);
+		clearInterval(newInt);
 	}
-	setInterval(onCircle,10);
+	var newInt = setInterval(onCircle,10);
 </script>
 
 </body>
