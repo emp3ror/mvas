@@ -23,9 +23,43 @@ hello world
   console.log(cloudy);
   var apple = mVas.text("hello apple",{help:"smth"});
   var ball = mVas.text("hello ball",{help:"smth"});
-  newCanvas.add(apple,100,1);
-  newCanvas.add(ball,10,100);
-  newCanvas.add(cloudy,100,100);
+  var cat = mVas.text("hello cat",{help:"smth"});
+  // newCanvas.add(apple,100,1);
+  // newCanvas.add(ball,10,100);
+  // newCanvas.add(cloudy,100,100);
+  console.log(ball);
+  // ball.animate("circle",{radius : 200,
+  //     startAngle: 0,
+  //     endAngle : 360,
+  //     speed : 4,
+  //     objRotate : true,
+  //     loop: true});
+  newCanvas.addAnimation(apple,{ type : "circle",
+      radius : 80,
+      startAngle: 0,
+      endAngle : 360,
+      speed : 10,
+      objRotate : true,
+      loop: true});
+
+  newCanvas.addAnimation(ball,{ type : "circle",
+      radius : 80,
+      startAngle: 0,
+      endAngle : 360,
+      speed : 2,
+      objRotate : true,
+      loop: true});
+
+  newCanvas.addAnimation(cat,{ type : "circle",
+      radius : 80,
+      startAngle: 0,
+      endAngle : 360,
+      speed : 50,
+      objRotate : true,
+      loop: true});
+
+  newCanvas.startAnimation();
+  // mVas.animate("smth");
   // newCanvas.add(line,100,100);
   newCanvas.draw(true);
 

@@ -57,6 +57,18 @@
         grid.rows = height/grid.boxlength;
     }
 
+    /* requestAnimationFrame function, if not defined goes to setTimeout
+    */
+    var requestAnimationFrame =
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        function(callback) {
+          return setTimeout(callback, 1);
+        };
+
     /*mVas function initialiser*/
     var mVas = function (id,parent){
         if (typeof id === "undefined") {
@@ -68,9 +80,11 @@
         return new mVas.fn.init(id,parent);
     }
 
-    mVas.fn = mVas.prototype = {
+    mVas.fn = {
 
         drawArray : [],
+        animateArray : [],
+        animationLoop : false,
         //init get id and set canvas and context (ctx)
         //parent is to set dimension of canvas be equal to parents, more like making responsive
         init : function (id,parent) {
@@ -240,19 +254,7 @@
             }
         },
         line : function () {
-            var canvasLine = document.createElement('canvas');
-            var contextLine = canvas.getContext('2d');
-            canvasLine.width = 500;
-            canvasLine.height = 500;
-            contextLine.beginPath();
-            contextLine.moveTo(100, 150);
-            contextLine.lineTo(450, 50);
-            contextLine.lineWidth = 15;
-            // set line color
-            contextLine.strokeStyle = '#ff0000';
-            contextLine.lineCap = 'butt';
-            contextLine.stroke();
-            return canvasLine;
+
         },
 
         /* filling draw array
@@ -293,24 +295,172 @@
             };
         },
 
-        animate : function () {
+        animate : function (type,obj) {
+            switch (type) {
+                case "circle" :
+                /*radius : 200,
+                  startAngle: 0,
+                  endAngle : 360,
+                  speed : 4, //bigger = slower
+                  objRotate : true,
+                  loop: true*/
+                this.animate = {path : pathOnCircle(obj.radius,obj.startAngle,obj.endAngle),
+                    speed : obj.speed,
+                    objRotate : obj.objRotate,
+                    loop : obj.loop
+                };
+
+                break;
+
+            }
+        }, //animate add ends
+
+        addAnimation : function (obj1,obj2) {
+            console.log("hi from add animation");
+            console.log(this.animationLoop);
+            obj1.animate = {path : pathOnCircle(obj2.radius,obj2.startAngle,obj2.endAngle),
+                speed : obj2.speed,
+                objRotate : obj2.objRotate,
+                loop : obj2.loop
+            };
+            this.animateArray.push(obj1);
+        },
+
+        startAnimation : function () {
+            var self = this;
+            var counter = 0;
+            var reset = true;
+            function looper () {
+                self.ctx.clearRect(0,0,500,500);
+                for (var i = 0; i < self.animateArray.length; i++) {
+                    // console.log(animateObj);
+                    var animateObj = self.animateArray[i];
+                    if (typeof animateObj.counter === 'undefined' || reset===true) {
+                        animateObj.counter = 0;
+                        console.log("here again")
+                        reset = false;
+                    };
+                    var newCounter = animateObj.counter;
+                    // console.log(newCounter);
+                    console.log(animateObj.animate.path[newCounter]);
+
+                    if (animateObj.counter>=animateObj.animate.path.length-1) {
+                        animateObj.counter=0;
+                    };
+
+                    self.ctx.save();
+                    self.ctx.translate(250,150);
+                    drawIt(self.ctx,animateObj.src, animateObj.type,animateObj.animate.path[animateObj.counter]);
+                    self.ctx.restore();
+                    if (counter%animateObj.animate.speed) {
+                        animateObj.counter++;
+                    };
+                };
+                counter++;
+                /*if (counter>360) {
+                    counter = 0;
+                    reset = true;
+                    console.log("finish");
+                    // requestAnimationFrame(looper);
+                } else {
+
+                }*/
+                requestAnimationFrame(looper);
+
+            }
+
+            looper();
 
         }
 
     };
 
+    /*
+    * draw functions below
+    */
+    var drawIt = function (ctx,src, type,path) {
+        var self = ctx;
+        var obj = {
+            src : src,
+            x : path.x,
+            y : path.y
+        };
+        switch (type) {
+            case "text":
+            drawText(obj,self);
+            break;
+
+            case "image":
+            drawImage(src,self);
+            break;
+        }
+    };
+
     var drawText = function (obj,self) {
+        console.log(obj);
+        console.log(self);
+        var degrees = 0;
+        self.rotate(degrees*Math.PI/180);
         self.drawImage(obj.src, obj.x, obj.y,200,200);
     };
 
     var drawImage = function (obj,self) {
         var img = new Image();
+        var degrees = 0;
+
         img.onload = function () {
+            self.rotate(degrees*Math.PI/180);
             self.drawImage(img, obj.x, obj.y,200,200);
         }
+        // self.rotate(0.90);
         img.src = obj.src;
-
     };
+
+    var drawLine = function (obj,self) {
+        self.beginPath();
+        self.moveTo(100, 150);
+        self.lineTo(450, 50);
+        self.lineWidth = 15;
+        // set line color
+        self.strokeStyle = '#ff0000';
+        self.lineCap = 'butt';
+        self.stroke();
+    }
+
+    var pathOnCircle = function (radius,startAngle,endAngle) {
+        var r = radius;
+        if (typeof radius === 'undefined') {
+            r = 100;
+        } else {
+            r = radius;
+        };
+        if (typeof startAngle === 'undefined') {
+            startAngle = 0;
+        };
+        if (typeof endAngle === 'undefined') {
+            endAngle = 0;
+        };
+
+        var coordinates = [];
+        for (var i = startAngle; i <=endAngle; i++) {
+            var angle= i*22/(7*180);
+            /*  x = r*Math.cos(angle); getting x on circle
+                y = r*Math.sin(angle); getting y on circle
+            */
+            coordinates.push({x : r*Math.cos(angle),y : r*Math.sin(angle), angle : angle});
+        };
+        return coordinates;
+    }
+
+    /*function drawRectangle(myRectangle, context) {
+        context.beginPath();
+        context.rect(myRectangle.x, myRectangle.y, myRectangle.width, myRectangle.height);
+        context.fillStyle = '#8ED6FF';
+        context.fill();
+        context.lineWidth = myRectangle.borderWidth;
+        context.strokeStyle = 'black';
+        context.stroke();
+      }*/
 
     /**
     *this creates prototype to the init function
@@ -337,9 +487,13 @@
     mVas.images = function (img) {
         return new mVas.fn.images(img);
         // return "images/cloudy.png";
-    };
+    }
     mVas.line = function () {
         return new mVas.fn.line ();
+    }
+
+    mVas.animate = function (type,obj) {
+        return new mVas.fn.animate(type,obj)
     }
 
     //define globally if it doesn't already exist
