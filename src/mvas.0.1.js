@@ -331,7 +331,7 @@
             var counter = 0;
             var reset = true;
             function looper () {
-                self.ctx.clearRect(0,0,500,500);
+                self.ctx.clearRect(0,0,1000,1000);
                 for (var i = 0; i < self.animateArray.length; i++) {
                     // console.log(animateObj);
                     var animateObj = self.animateArray[i];
@@ -349,7 +349,7 @@
                     };
 
                     self.ctx.save();
-                    self.ctx.translate(250,150);
+                    self.ctx.translate(500,200);
                     drawIt(self.ctx,animateObj.src, animateObj.type,animateObj.animate.path[animateObj.counter]);
                     self.ctx.restore();
                     if (counter%animateObj.animate.speed) {

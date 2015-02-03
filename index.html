@@ -6,7 +6,7 @@
 hello world
 <img src="images/cloudy.png" alt="" width="50px">
 <div id="canvas">
-  <canvas id="thecanvas" width="500px" height="500px"></canvas>
+  <canvas id="thecanvas" width="1000px" height="1000px"></canvas>
 </div>
 <script src="src/mvas.0.1.js"></script>
 <script type="text/javascript">
@@ -57,6 +57,18 @@ hello world
       speed : 50,
       objRotate : true,
       loop: true});
+
+  var cow = [];
+  for (var i = 0; i < 100; i++) {
+    cow[i] = mVas.text("hello cow "+i,{help:"smth"});
+    newCanvas.addAnimation(cow[i],{ type : "circle",
+      radius : 80*(i+1)/3,
+      startAngle: 0,
+      endAngle : 360,
+      speed : Math.floor((Math.random() * 100) + 1),
+      objRotate : true,
+      loop: true});
+  };
 
   newCanvas.startAnimation();
   // mVas.animate("smth");
