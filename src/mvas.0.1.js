@@ -330,6 +330,8 @@
             var self = this;
             var counter = 0;
             var reset = true;
+
+            var img = [];  //trying image to work
             function looper () {
                 self.ctx.clearRect(0,0,1000,1000);
                 for (var i = 0; i < self.animateArray.length; i++) {
@@ -341,15 +343,23 @@
                         reset = false;
                     };
                     var newCounter = animateObj.counter;
-                    // console.log(newCounter);
-                    console.log(animateObj.animate.path[newCounter]);
+                    // console.log(animateObj);
+                    // console.log(animateObj.animate.path);
+                    if (animateObj.type === 'image') {
+                        if (typeof img[i]==='undefined') {
+                            img[i] = new Image();
+                            img[i].src=animateObj.src;
+                        };
+                        animateObj.src = img[i];
+
+                    };
 
                     if (animateObj.counter>=animateObj.animate.path.length-1) {
                         animateObj.counter=0;
                     };
 
                     self.ctx.save();
-                    self.ctx.translate(500,200);
+                    self.ctx.translate(500,500);
                     drawIt(self.ctx,animateObj.src, animateObj.type,animateObj.animate.path[animateObj.counter]);
                     self.ctx.restore();
                     if (counter%animateObj.animate.speed) {
@@ -380,46 +390,68 @@
     */
     var drawIt = function (ctx,src, type,path) {
         var self = ctx;
+
         var obj = {
             src : src,
             x : path.x,
-            y : path.y
+            y : path.y,
+            angle : path.angle
         };
+
         switch (type) {
             case "text":
             drawText(obj,self);
             break;
 
             case "image":
-            drawImage(src,self);
+            drawImage(obj,self);
+            drawLine(obj, self)
             break;
         }
     };
 
     var drawText = function (obj,self) {
-        console.log(obj);
-        console.log(self);
+        // console.log(obj);
+        // console.log(self);
+
         var degrees = 0;
+        if (typeof obj.angle !== 'undefined') {
+            degrees = obj.angle;
+        };
         self.rotate(degrees*Math.PI/180);
         self.drawImage(obj.src, obj.x, obj.y,200,200);
     };
 
     var drawImage = function (obj,self) {
-        var img = new Image();
+        // console.log(obj.src);
+        if (typeof obj.src === 'undefined') {
+            return false;
+        };
+        // var img = new Image();
+        var img = obj.src;
         var degrees = 0;
-
-        img.onload = function () {
+        if (typeof obj.angle !== 'undefined') {
+            degrees = obj.angle;
+        };
+        // console.log(obj);
+        // self.save();
+        // img.onload = function () {
             self.rotate(degrees*Math.PI/180);
-            self.drawImage(img, obj.x, obj.y,200,200);
-        }
+            // self.rotate(60*Math.PI/180);
+            console.log(obj.x,obj.y);
+            self.drawImage(img, obj.x, obj.y,100,100);
+            // self.drawImage(img, 10, 10,50,50);
+        // }
         // self.rotate(0.90);
-        img.src = obj.src;
+        // img.src = obj.src;
+        // console.log(img);
+        // self.restore();
     };
 
     var drawLine = function (obj,self) {
         self.beginPath();
-        self.moveTo(100, 150);
-        self.lineTo(450, 50);
+        self.moveTo(0, 0);
+        self.lineTo(obj.x, obj.y);
         self.lineWidth = 15;
         // set line color
         self.strokeStyle = '#ff0000';

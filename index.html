@@ -58,6 +58,14 @@ hello world
       objRotate : true,
       loop: true});
 
+  newCanvas.addAnimation(cloudy,{ type : "circle",
+      radius : 200,
+      startAngle: 0,
+      endAngle : 360,
+      speed : 50,
+      objRotate : true,
+      loop: true});
+
   var cow = [];
   for (var i = 0; i < 100; i++) {
     cow[i] = mVas.text("hello cow "+i,{help:"smth"});
