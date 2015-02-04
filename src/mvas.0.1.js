@@ -14,9 +14,10 @@
     
     'use strict'; //should have defined variables
 
-    var _self = this;
+    var _self = this; //not used yet, might have a use
 
     //defining frame rate = frame per second (fps)... default = 25
+    //i have to find good way to work fps with requestAnimationFrame
     var fps = 25;
     var timeToChangeFrame = 1000/fps;
 
@@ -436,10 +437,10 @@
         // console.log(obj);
         // self.save();
         // img.onload = function () {
-            self.rotate(degrees*Math.PI/180);
-            // self.rotate(60*Math.PI/180);
-            console.log(obj.x,obj.y);
-            self.drawImage(img, obj.x, obj.y,100,100);
+        self.rotate(degrees*Math.PI/180);
+        // self.rotate(60*Math.PI/180);
+        console.log(obj.x,obj.y);
+        self.drawImage(img, obj.x, obj.y,100,100);
             // self.drawImage(img, 10, 10,50,50);
         // }
         // self.rotate(0.90);
