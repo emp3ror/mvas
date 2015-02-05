@@ -89,10 +89,17 @@
         //init get id and set canvas and context (ctx)
         //parent is to set dimension of canvas be equal to parents, more like making responsive
         init : function (id,parent) {
+
+
             this.canvas = document.getElementById(id);
             this.ctx = this.canvas.getContext("2d");
             if (typeof parent != "undefined") {
-
+                this.parentId = document.getElementById(parent);
+                this.canvasWidth = this.parentId.offsetWidth;
+                this.canvasHeight = this.parentId.offsetHeight;
+                this.canvas.width = this.canvasWidth;
+                this.canvas.height = this.canvasHeight;
+                console.log(this.canvasWidth);
             }
             return this;
         },
@@ -281,6 +288,7 @@
                 };
 
                 var self = this.ctx;
+                var img = null;
                 self.save();
                     switch (theObj.type) {
                         case "text":
@@ -288,6 +296,9 @@
                         break;
 
                         case "image":
+                            img = new Image();
+                            img.src=theObj.src;
+                            theObj.src = img;
                             drawImage(theObj,self);
                         break
                     }
@@ -360,7 +371,7 @@
                     };
 
                     self.ctx.save();
-                    self.ctx.translate(500,500);
+                    // self.ctx.translate(500,500);
                     drawIt(self.ctx,animateObj.src, animateObj.type,animateObj.animate.path[animateObj.counter]);
                     self.ctx.restore();
                     if (counter%animateObj.animate.speed) {
@@ -414,45 +425,63 @@
     var drawText = function (obj,self) {
         // console.log(obj);
         // console.log(self);
-
+        self.translate(getPixel(obj.x),getPixel(obj.y));
+        // self.setTransform(1,0,0,1,0,0);
         var degrees = 0;
         if (typeof obj.angle !== 'undefined') {
             degrees = obj.angle;
         };
         self.rotate(degrees*Math.PI/180);
-        self.drawImage(obj.src, obj.x, obj.y,200,200);
+        self.drawImage(obj.src, 0, 0,200,200);
     };
 
     var drawImage = function (obj,self) {
         // console.log(obj.src);
+        // console.log(self);
         if (typeof obj.src === 'undefined') {
+            console.log(obj.src);
             return false;
         };
         // var img = new Image();
-        var img = obj.src;
-        var degrees = 0;
-        if (typeof obj.angle !== 'undefined') {
-            degrees = obj.angle;
-        };
-        // console.log(obj);
-        // self.save();
-        // img.onload = function () {
-        self.rotate(degrees*Math.PI/180);
-        // self.rotate(60*Math.PI/180);
-        console.log(obj.x,obj.y);
-        self.drawImage(img, obj.x, obj.y,100,100);
-            // self.drawImage(img, 10, 10,50,50);
-        // }
-        // self.rotate(0.90);
-        // img.src = obj.src;
-        // console.log(img);
-        // self.restore();
+        // console.log("obj "+obj.x+"   "+getPixel(obj.x));
+
+        // self.setTransform(1,0,0,1,0,0);
+
+        if (typeof obj.src === 'string') {
+            var img = new Image()
+            img.addEventListener('load', imageLoaded , false);
+            img.src = obj.src;
+        } else {
+            console.log(obj.src);
+            var img = obj.src;
+            imageLoaded();
+        }
+        // console.log(typeof obj.src);
+        function imageLoaded () {
+            // console.log(img);
+            var degrees = 0;
+            if (typeof obj.angle !== 'undefined') {
+                degrees = obj.angle;
+            };
+            self.rotate(degrees*Math.PI/180);
+            // console.log(getPixel(obj.x),getPixel(obj.y));
+            self.translate(getPixel(obj.x),getPixel(obj.y));
+            // self.translate(0,100);
+            // console.log(getPixel(100));
+            // console.log("smth");
+            // self.translate(10,10);
+            // console.log(obj.x,obj.y);
+            self.drawImage(img, 0, 0,100,100);
+        }
+
     };
 
     var drawLine = function (obj,self) {
+        // self.setTransform(1,0,0,1,0,0);
+        // self.translate(getPixel(obj.x),getPixel(obj.y));
         self.beginPath();
         self.moveTo(0, 0);
-        self.lineTo(obj.x, obj.y);
+        self.lineTo(getPixel(obj.x),getPixel(obj.y));
         self.lineWidth = 15;
         // set line color
         self.strokeStyle = '#ff0000';
@@ -494,6 +523,12 @@
         context.strokeStyle = 'black';
         context.stroke();
       }*/
+
+    /* returns calculated pixel for the provided num according to grid smallbox size
+    */
+    var getPixel = function (num) {
+        return num*grid.boxlength;
+    }
 
     /**
     *this creates prototype to the init function
