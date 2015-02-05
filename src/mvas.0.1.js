@@ -45,16 +45,18 @@
 
     /*sets length of small sq box of grid according to width of canvas and columns provided*/
     var setSqBoxLength = function (width) {
+        console.log("width "+width);
         grid.boxlength = width/grid.columns;
     }
 
     /*sets number of columns according to grid square box length and width*/
-    var setcolumns = function (width) {
-        grid.columns = height/grid.boxlength;
+    var setGridcolumns = function (width) {
+        console.log("width "+width);
+        grid.columns = width/grid.boxlength;
     }
 
     /*sets number of rows according to grid square box length and height*/
-    var setRows = function (height) {
+    var setGridRows = function (height) {
         grid.rows = height/grid.boxlength;
     }
 
@@ -89,8 +91,6 @@
         //init get id and set canvas and context (ctx)
         //parent is to set dimension of canvas be equal to parents, more like making responsive
         init : function (id,parent) {
-
-
             this.canvas = document.getElementById(id);
             this.ctx = this.canvas.getContext("2d");
             if (typeof parent != "undefined") {
@@ -99,7 +99,11 @@
                 this.canvasHeight = this.parentId.offsetHeight;
                 this.canvas.width = this.canvasWidth;
                 this.canvas.height = this.canvasHeight;
-                console.log(this.canvasWidth);
+                console.log("hellow "+this.canvasWidth);
+            } else {
+                this.canvasWidth = this.canvas.width;
+                this.canvasHeight = this.canvas.height;
+                console.log("hellow "+this.canvasWidth);
             }
             return this;
         },
@@ -166,6 +170,9 @@
                     return false;
                 };
                 grid.columns = num;
+                setSqBoxLength(this.canvasWidth);
+                setGridRows(this.canvasHeight);
+
                 return true;
             } else if (typeof num === 'undefined') {
                 return grid.columns;
@@ -173,6 +180,10 @@
                 console.log("please provide positive integer value");
                 return false;
             }
+        },
+
+        getGridRows : function () {
+            return grid.rows;
         },
 
         /*sets gridShowBoxLength if provide else shows the condition */
@@ -267,12 +278,15 @@
 
         /* filling draw array
         */
-        add : function (obj,posX,posY) {
+        add : function (obj,posX,posY,width,height) {
             this.drawArray.push({
                 src : obj.src,
                 type : obj.type,
                 x : posX,
-                y : posY});
+                y : posY,
+                w : width,
+                h : height
+            });
             // console.log(this.drawArray);
         },
 
@@ -333,7 +347,8 @@
             obj1.animate = {path : pathOnCircle(obj2.radius,obj2.startAngle,obj2.endAngle),
                 speed : obj2.speed,
                 objRotate : obj2.objRotate,
-                loop : obj2.loop
+                loop : obj2.loop,
+                ref : obj2.referencePoint
             };
             this.animateArray.push(obj1);
         },
@@ -345,7 +360,7 @@
 
             var img = [];  //trying image to work
             function looper () {
-                self.ctx.clearRect(0,0,1000,1000);
+                self.ctx.clearRect(0,0,self.canvasWidth,self.canvasHeight);
                 for (var i = 0; i < self.animateArray.length; i++) {
                     // console.log(animateObj);
                     var animateObj = self.animateArray[i];
@@ -365,13 +380,12 @@
                         animateObj.src = img[i];
 
                     };
-
                     if (animateObj.counter>=animateObj.animate.path.length-1) {
                         animateObj.counter=0;
                     };
 
                     self.ctx.save();
-                    // self.ctx.translate(500,500);
+                    self.ctx.translate(animateObj.animate.ref.x,animateObj.animate.ref.y);
                     drawIt(self.ctx,animateObj.src, animateObj.type,animateObj.animate.path[animateObj.counter]);
                     self.ctx.restore();
                     if (counter%animateObj.animate.speed) {
@@ -439,41 +453,38 @@
         // console.log(obj.src);
         // console.log(self);
         if (typeof obj.src === 'undefined') {
-            console.log(obj.src);
+            // console.log(obj.src);
             return false;
         };
         // var img = new Image();
         // console.log("obj "+obj.x+"   "+getPixel(obj.x));
 
         // self.setTransform(1,0,0,1,0,0);
-
-        if (typeof obj.src === 'string') {
+        var img = obj.src;
+        /*if (typeof obj.src === 'string') {
             var img = new Image()
             img.addEventListener('load', imageLoaded , false);
             img.src = obj.src;
-        } else {
-            console.log(obj.src);
-            var img = obj.src;
-            imageLoaded();
-        }
-        // console.log(typeof obj.src);
-        function imageLoaded () {
-            // console.log(img);
-            var degrees = 0;
-            if (typeof obj.angle !== 'undefined') {
-                degrees = obj.angle;
-            };
-            self.rotate(degrees*Math.PI/180);
-            // console.log(getPixel(obj.x),getPixel(obj.y));
-            self.translate(getPixel(obj.x),getPixel(obj.y));
-            // self.translate(0,100);
-            // console.log(getPixel(100));
-            // console.log("smth");
-            // self.translate(10,10);
-            // console.log(obj.x,obj.y);
-            self.drawImage(img, 0, 0,100,100);
-        }
+        } else {*/
+            // console.log(obj.src);
 
+            // imageLoaded();
+        // }
+        // console.log(typeof obj.src);
+        // function imageLoaded () {
+            // console.log(img);
+        var degrees = 0;
+        if (typeof obj.angle !== 'undefined') {
+            degrees = obj.angle;
+        };
+        self.rotate(degrees*Math.PI/180);
+        // console.log(getPixel(obj.x),getPixel(obj.y));
+        var x = getPixel(obj.x), y = getPixel(obj.y),
+            w=getPixel(obj.w), h=getPixel(obj.h);
+            // console.log(x,y);
+        self.translate(x,y);
+        self.drawImage(img, -w/2, -h/2,w,h);
+        // }
     };
 
     var drawLine = function (obj,self) {
