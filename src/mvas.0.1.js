@@ -45,13 +45,11 @@
 
     /*sets length of small sq box of grid according to width of canvas and columns provided*/
     var setSqBoxLength = function (width) {
-        console.log("width "+width);
         grid.boxlength = width/grid.columns;
     }
 
     /*sets number of columns according to grid square box length and width*/
     var setGridcolumns = function (width) {
-        console.log("width "+width);
         grid.columns = width/grid.boxlength;
     }
 
@@ -91,6 +89,8 @@
         //init get id and set canvas and context (ctx)
         //parent is to set dimension of canvas be equal to parents, more like making responsive
         init : function (id,parent) {
+
+
             this.canvas = document.getElementById(id);
             this.ctx = this.canvas.getContext("2d");
             if (typeof parent != "undefined") {
@@ -99,11 +99,7 @@
                 this.canvasHeight = this.parentId.offsetHeight;
                 this.canvas.width = this.canvasWidth;
                 this.canvas.height = this.canvasHeight;
-                console.log("hellow "+this.canvasWidth);
-            } else {
-                this.canvasWidth = this.canvas.width;
-                this.canvasHeight = this.canvas.height;
-                console.log("hellow "+this.canvasWidth);
+                console.log(this.canvasWidth);
             }
             return this;
         },
@@ -263,14 +259,19 @@
         },
 
         /*trying on image*/
-        images : function (img) {
+        images : function (img, obj) {
             // dont know why img.onload and loading on new canvas didnt work, and returning the canvas like in TEXT function
             //if anyone have solution, it might be used for buffer :)
-            return {
+            var justObj = {
                 src : img,
                 type : "image",
                 zoom : 1,
+            };
+            if (typeof obj !== 'undefined') {
+                justObj.width = obj.width;
+                justObj.height = obj.height;
             }
+            return justObj;
         },
         line : function () {
 
@@ -344,6 +345,7 @@
         addAnimation : function (obj1,obj2) {
             console.log("hi from add animation");
             console.log(this.animationLoop);
+            console.log(obj1);
             obj1.animate = {path : pathOnCircle(obj2.radius,obj2.startAngle,obj2.endAngle),
                 speed : obj2.speed,
                 objRotate : obj2.objRotate,
@@ -385,23 +387,23 @@
                     };
 
                     self.ctx.save();
-                    self.ctx.translate(animateObj.animate.ref.x,animateObj.animate.ref.y);
-                    drawIt(self.ctx,animateObj.src, animateObj.type,animateObj.animate.path[animateObj.counter]);
+                    var ref = animateObj.animate.ref;
+                    self.ctx.translate(getPixel(ref.x),getPixel(ref.y));
+                    drawIt(self.ctx,animateObj.src,animateObj.width,animateObj.height, animateObj.type,animateObj.animate.path[animateObj.counter]);
                     self.ctx.restore();
-                    if (counter%animateObj.animate.speed) {
+                    if (counter%animateObj.animate.speed==0) {
                         animateObj.counter++;
                     };
+                    console.log("loading "+counter+" speed"+animateObj.animate.speed);
+                    console.log("counter "+animateObj.counter);
                 };
                 counter++;
-                /*if (counter>360) {
-                    counter = 0;
-                    reset = true;
-                    console.log("finish");
-                    // requestAnimationFrame(looper);
-                } else {
+                // if (counter<300) {
+                   requestAnimationFrame(looper);
+                // };
 
-                }*/
-                requestAnimationFrame(looper);
+
+
 
             }
 
@@ -414,11 +416,13 @@
     /*
     * draw functions below
     */
-    var drawIt = function (ctx,src, type,path) {
+    var drawIt = function (ctx,src,w,h,type,path) {
         var self = ctx;
 
         var obj = {
             src : src,
+            w : w,
+            h : h,
             x : path.x,
             y : path.y,
             angle : path.angle
@@ -431,7 +435,7 @@
 
             case "image":
             drawImage(obj,self);
-            drawLine(obj, self)
+            // drawLine(obj, self)
             break;
         }
     };
@@ -450,54 +454,50 @@
     };
 
     var drawImage = function (obj,self) {
-        // console.log(obj.src);
-        // console.log(self);
+        self.save();
         if (typeof obj.src === 'undefined') {
-            // console.log(obj.src);
+            console.log(obj.src);
             return false;
         };
-        // var img = new Image();
-        // console.log("obj "+obj.x+"   "+getPixel(obj.x));
-
-        // self.setTransform(1,0,0,1,0,0);
         var img = obj.src;
-        /*if (typeof obj.src === 'string') {
-            var img = new Image()
-            img.addEventListener('load', imageLoaded , false);
-            img.src = obj.src;
-        } else {*/
-            // console.log(obj.src);
 
-            // imageLoaded();
-        // }
-        // console.log(typeof obj.src);
-        // function imageLoaded () {
-            // console.log(img);
+        if (typeof obj.w === 'undefined') {
+            obj.w = 20;
+        };
+
+        if (typeof obj.h === 'undefined') {
+            obj.h = 20;
+        };
+
+        // console.log(obj.src);
         var degrees = 0;
         if (typeof obj.angle !== 'undefined') {
             degrees = obj.angle;
+            self.rotate(degrees);
+            // console.log(obj.angle);
         };
-        self.rotate(degrees*Math.PI/180);
-        // console.log(getPixel(obj.x),getPixel(obj.y));
+        // if (true) {};
+
         var x = getPixel(obj.x), y = getPixel(obj.y),
-            w=getPixel(obj.w), h=getPixel(obj.h);
-            // console.log(x,y);
+        w=getPixel(obj.w), h=getPixel(obj.h);
         self.translate(x,y);
         self.drawImage(img, -w/2, -h/2,w,h);
-        // }
+        self.restore();
     };
 
     var drawLine = function (obj,self) {
+        self.save();
         // self.setTransform(1,0,0,1,0,0);
         // self.translate(getPixel(obj.x),getPixel(obj.y));
         self.beginPath();
         self.moveTo(0, 0);
         self.lineTo(getPixel(obj.x),getPixel(obj.y));
-        self.lineWidth = 15;
+        self.lineWidth = 3;
         // set line color
         self.strokeStyle = '#ff0000';
         self.lineCap = 'butt';
         self.stroke();
+        self.restore();
     }
 
     var pathOnCircle = function (radius,startAngle,endAngle) {
@@ -516,7 +516,7 @@
 
         var coordinates = [];
         for (var i = startAngle; i <=endAngle; i++) {
-            var angle= i*22/(7*180);
+            var angle= i*Math.PI/180;
             /*  x = r*Math.cos(angle); getting x on circle
                 y = r*Math.sin(angle); getting y on circle
             */
@@ -541,6 +541,10 @@
         return num*grid.boxlength;
     }
 
+    var radian = function (degree) {
+        return degree*Math.PI/180;
+    }
+
     /**
     *this creates prototype to the init function
     * and other entites which will be directly called
@@ -563,8 +567,8 @@
     mVas.text = function (text) {
         return new mVas.fn.text(text);
     }
-    mVas.images = function (img) {
-        return new mVas.fn.images(img);
+    mVas.images = function (img,obj) {
+        return new mVas.fn.images(img,obj);
         // return "images/cloudy.png";
     }
     mVas.line = function () {
