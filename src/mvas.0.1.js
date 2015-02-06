@@ -344,14 +344,28 @@
 
         addAnimation : function (obj1,obj2) {
             console.log("hi from add animation");
-            console.log(this.animationLoop);
-            console.log(obj1);
-            obj1.animate = {path : pathOnCircle(obj2.radius,obj2.startAngle,obj2.endAngle),
-                speed : obj2.speed,
-                objRotate : obj2.objRotate,
-                loop : obj2.loop,
-                ref : obj2.referencePoint
-            };
+            // console.log(this.animationLoop);
+            console.log(obj2.type);
+            switch (obj2.type) {
+                case 'circle' :
+                    obj1.animate = {path : pathOnCircle(obj2.radius,obj2.startAngle,obj2.endAngle),
+                        speed : obj2.speed,
+                        objRotate : obj2.objRotate,
+                        loop : obj2.loop,
+                        ref : obj2.referencePoint
+                    };
+                break;
+
+                case 'path' :
+                obj1.animate = {path : obj2.path,
+                    speed : obj2.speed,
+                    objRotate : obj2.objRotate,
+                    loop : obj2.loop,
+                    ref : obj2.referencePoint
+                };
+                break;
+            }
+
             this.animateArray.push(obj1);
         },
 
@@ -382,8 +396,10 @@
                         animateObj.src = img[i];
 
                     };
-                    if (animateObj.counter>=animateObj.animate.path.length-1) {
+                    if (animateObj.counter>=animateObj.animate.path.length-1 && animateObj.animate.loop) {
                         animateObj.counter=0;
+                    } else if (animateObj.counter>=animateObj.animate.path.length-1 && !animateObj.animate.loop) {
+                        break;
                     };
 
                     self.ctx.save();
@@ -401,9 +417,6 @@
                 // if (counter<300) {
                    requestAnimationFrame(looper);
                 // };
-
-
-
 
             }
 
@@ -523,6 +536,36 @@
             coordinates.push({x : r*Math.cos(angle),y : r*Math.sin(angle), angle : angle});
         };
         return coordinates;
+    };
+
+    var pathOnLine = function (x1,y1,x2,y2,step) {
+        var speed = step,
+            dx = x2-x1,
+            dy = y2-y1;
+
+        var distance = Math.sqrt(dx*dx+dy*dy);
+        var moves = distance/speed;
+        var xunits = dx/moves,
+            yunits = dy/moves;
+        var path = [];
+        console.log(moves);
+        var xCalc = x1, yCalc = y1;
+        for (var i = 0; i < moves; i++) {
+
+            path.push({
+                x : xCalc,
+                y : yCalc
+            });
+            xCalc += xunits;
+            yCalc += yunits;
+        };
+
+        return path;
+
+    };
+
+    mVas.pathOnLine = function (x1,y1,x2,y2,step) {
+        return pathOnLine(x1,y1,x2,y2,step);
     }
 
     /*function drawRectangle(myRectangle, context) {
