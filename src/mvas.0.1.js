@@ -379,6 +379,7 @@
                 self.ctx.clearRect(0,0,self.canvasWidth,self.canvasHeight);
                 for (var i = 0; i < self.animateArray.length; i++) {
                     // console.log(animateObj);
+                    console.log(self.animateArray.length);
                     var animateObj = self.animateArray[i];
                     if (typeof animateObj.counter === 'undefined' || reset===true) {
                         animateObj.counter = 0;
@@ -398,24 +399,29 @@
                     };
                     if (animateObj.counter>=animateObj.animate.path.length-1 && animateObj.animate.loop) {
                         animateObj.counter=0;
-                    } else if (animateObj.counter>=animateObj.animate.path.length-1 && !animateObj.animate.loop) {
-                        break;
-                    };
+                    }
 
-                    self.ctx.save();
-                    var ref = animateObj.animate.ref;
-                    self.ctx.translate(getPixel(ref.x),getPixel(ref.y));
-                    drawIt(self.ctx,animateObj.src,animateObj.width,animateObj.height, animateObj.type,animateObj.animate.path[animateObj.counter]);
-                    self.ctx.restore();
-                    if (counter%animateObj.animate.speed==0) {
-                        animateObj.counter++;
-                    };
-                    console.log("loading "+counter+" speed"+animateObj.animate.speed);
-                    console.log("counter "+animateObj.counter);
+                    if (animateObj.counter>=animateObj.animate.path.length-1 && !animateObj.animate.loop) {
+
+                    } else {
+                        self.ctx.save();
+                        var ref = animateObj.animate.ref;
+                        self.ctx.translate(getPixel(ref.x),getPixel(ref.y));
+                        drawIt(self.ctx,animateObj.src,animateObj.width,animateObj.height, animateObj.type,animateObj.animate.path[animateObj.counter],animateObj.animate.objRotate);
+                        self.ctx.restore();
+                        if (counter%animateObj.animate.speed==0) {
+                            animateObj.counter++;
+                        };
+                    }
+                    // console.log("loading "+counter+" speed"+animateObj.animate.speed);
+                    // console.log("counter "+animateObj.counter);
                 };
                 counter++;
                 // if (counter<300) {
-                   requestAnimationFrame(looper);
+                    // setTimeout(function () {
+                        requestAnimationFrame(looper);
+                    // }, 500);
+
                 // };
 
             }
@@ -429,7 +435,7 @@
     /*
     * draw functions below
     */
-    var drawIt = function (ctx,src,w,h,type,path) {
+    var drawIt = function (ctx,src,w,h,type,path,objrotate) {
         var self = ctx;
 
         var obj = {
@@ -438,7 +444,8 @@
             h : h,
             x : path.x,
             y : path.y,
-            angle : path.angle
+            angle : path.angle,
+            rotate : objrotate,
         };
 
         switch (type) {
@@ -460,9 +467,9 @@
         // self.setTransform(1,0,0,1,0,0);
         var degrees = 0;
         if (typeof obj.angle !== 'undefined') {
-            degrees = obj.angle;
+            degrees = 2*obj.angle;
         };
-        self.rotate(degrees*Math.PI/180);
+        self.rotate(degrees);
         self.drawImage(obj.src, 0, 0,200,200);
     };
 
@@ -484,16 +491,21 @@
 
         // console.log(obj.src);
         var degrees = 0;
-        if (typeof obj.angle !== 'undefined') {
-            degrees = obj.angle;
+        /*if (typeof obj.angle !== 'undefined' && obj.rotate) {
+            degrees = 4*obj.angle;
             self.rotate(degrees);
             // console.log(obj.angle);
-        };
+        };*/
         // if (true) {};
 
         var x = getPixel(obj.x), y = getPixel(obj.y),
         w=getPixel(obj.w), h=getPixel(obj.h);
         self.translate(x,y);
+        if (typeof obj.angle !== 'undefined' && obj.rotate) {
+            degrees = obj.angle;
+            self.rotate(degrees);
+            // console.log(obj.angle);
+        };
         self.drawImage(img, -w/2, -h/2,w,h);
         self.restore();
     };
@@ -511,7 +523,7 @@
         self.lineCap = 'butt';
         self.stroke();
         self.restore();
-    }
+    };
 
     var pathOnCircle = function (radius,startAngle,endAngle) {
         var r = radius;
