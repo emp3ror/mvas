@@ -342,7 +342,7 @@
             }
         }, //animate add ends
 
-        addAnimation : function (obj1,obj2) {
+        addAnimation : function (obj1,obj2,callback) {
             console.log("hi from add animation");
             // console.log(this.animationLoop);
             console.log(obj2.type);
@@ -364,7 +364,10 @@
                     ref : obj2.referencePoint
                 };
                 break;
-            }
+            };
+            if (typeof callback === 'function') {
+                obj1.callback = callback;
+            };
 
             this.animateArray.push(obj1);
         },
@@ -379,7 +382,7 @@
                 self.ctx.clearRect(0,0,self.canvasWidth,self.canvasHeight);
                 for (var i = 0; i < self.animateArray.length; i++) {
                     // console.log(animateObj);
-                    console.log(self.animateArray.length);
+                    console.log("length "+self.animateArray.length);
                     var animateObj = self.animateArray[i];
                     if (typeof animateObj.counter === 'undefined' || reset===true) {
                         animateObj.counter = 0;
@@ -402,7 +405,9 @@
                     }
 
                     if (animateObj.counter>=animateObj.animate.path.length-1 && !animateObj.animate.loop) {
-
+                        console.log(typeof animateObj.callback);
+                        if (typeof animateObj.callback === 'function') {animateObj.callback()};
+                        // self.animateArray.splice(i,1);
                     } else {
                         self.ctx.save();
                         var ref = animateObj.animate.ref;
@@ -506,7 +511,13 @@
             self.rotate(degrees);
             // console.log(obj.angle);
         };
-        self.drawImage(img, -w/2, -h/2,w,h);
+        try {
+            self.drawImage(img, -w/2, -h/2,w,h);
+        } catch (err) {
+            console.log(err);
+            alert("smth");
+        }
+
         self.restore();
     };
 
