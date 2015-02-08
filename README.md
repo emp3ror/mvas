@@ -3,8 +3,8 @@ just another simple library for using canvas by mjt<br/>
 
 ##How to use
 * just link mvas.js (javascript file) which is located in src directry
-*simply mVas('id'); will initialise canvas,<br/>
-if you have done<br/>
+* simply mVas('id'); will initialise canvas,
+* if you have done<br/>
 	canvas = document.getElementById("thecanvas");<br/>
 	ctx = this.canvas.getContext("2d");<br/>
 then you can set canvas and context by<br/>
