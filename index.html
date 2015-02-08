@@ -37,6 +37,7 @@
   console.log("*************new test*************");*/
   var line = mVas.line();
   var cat = mVas.images("images/cat1.png",{width:100,height:100});
+  var plane = mVas.images("images/plane1.png",{width:100,height:100});
   // console.log(cloudy);
   var apple = mVas.text("hello apple",{help:"smth"});
   var ball = mVas.text("hello ball",{help:"smth"});
@@ -77,6 +78,29 @@
       referencePoint : {x:200,y:200},
       loop: true});
 
+/*var p0 = {x:60, y:10};
+var p1 = {x:150, y:350};
+var p2 = {x:300, y:375};
+var p3 = {x:400, y:20};*/
+  var newpaths = mVas.pathOnBenzierCurve({x:1000,y:400},
+          {x:100,y:-100},{x:850,y:-100},{x:-100,y:300},5);
+  console.log(newpaths);
+
+  newCanvas.addAnimation(plane,{type : "path",
+    path: newpaths,
+    speed :1,
+    referencePoint : {x:100, y:100},
+    loop : false
+  })
+
+/*
+canvas2.addAnimation(meteoroid,{ type : "path",
+   31.92 +      path : getpaths,
+   31.93 +      speed : 1,
+   31.94 +      referencePoint : {x: column/2, y:rows/2}, //refrencepoint is centre for circle
+   31.95 +      loop: false}, justCallback);
+   */
+
   // var cow = [];
   /*for (var i = 0; i < 100; i++) {
     cow[i] = mVas.text("hello cow "+i,{help:"smth"});
@@ -90,7 +114,7 @@
       referencePoint : {x:200,y:20},
       loop: true});
   };*/
-
+  
   newCanvas.startAnimation();
   // mVas.animate("smth");
   // newCanvas.add(line,100,100);

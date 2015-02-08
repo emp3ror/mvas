@@ -382,7 +382,7 @@
                 self.ctx.clearRect(0,0,self.canvasWidth,self.canvasHeight);
                 for (var i = 0; i < self.animateArray.length; i++) {
                     // console.log(animateObj);
-                    console.log("length "+self.animateArray.length);
+                    // console.log("length "+self.animateArray.length);
                     var animateObj = self.animateArray[i];
                     if (typeof animateObj.counter === 'undefined' || reset===true) {
                         animateObj.counter = 0;
@@ -587,8 +587,37 @@
 
     };
 
+    //Bézier curve 
+    var pathOnBenzierCurve = function (p1,p2,p3,p4,steps) {
+        var cx = 3 * (p2.x - p1.x),
+            bx = 3 *(p3.x - p2.x) - cx,
+            ax = p4.x - p1.x - cx - bx,
+            cy = 3 * (p2.y - p1.y),
+            by = 3 * (p3.y - p2.y) - cy,
+            ay = p4.y - p1.y - cy - by;
+
+        if (typeof steps === undefined || typeof steps !== 'number') {
+            steps = 0.01;
+        } else {
+            steps = steps/1000;
+        }
+        var paths = [];
+        console.log(steps);
+        for (var t = 0; t < 1; t=t+steps) {
+            console.log("mm "+t);
+            var xt = ax*(t*t*t) + bx*(t*t) + cx*t + p1.x;
+            var yt = ay*(t*t*t) + by*(t*t) + cy*t + p1.y;
+            paths.push({x: xt,y: yt});
+        };
+        return paths;
+    }
+
     mVas.pathOnLine = function (x1,y1,x2,y2,step) {
         return pathOnLine(x1,y1,x2,y2,step);
+    };
+
+    mVas.pathOnBenzierCurve = function (p1,p2,p3,p4,steps) {
+        return pathOnBenzierCurve(p1,p2,p3,p4,steps);
     }
 
     /*function drawRectangle(myRectangle, context) {
