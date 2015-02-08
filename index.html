@@ -83,14 +83,14 @@ var p1 = {x:150, y:350};
 var p2 = {x:300, y:375};
 var p3 = {x:400, y:20};*/
   var newpaths = mVas.pathOnBenzierCurve({x:1000,y:400},
-          {x:100,y:-100},{x:850,y:-100},{x:-100,y:300},5);
+          {x:100,y:-100},{x:850,y:-100},{x:-1000,y:300},1);
   console.log(newpaths);
 
   newCanvas.addAnimation(plane,{type : "path",
     path: newpaths,
     speed :1,
     referencePoint : {x:100, y:100},
-    loop : false
+    loop : true
   })
 
 /*
