@@ -1,10 +1,24 @@
 <html>
 <head>
 	<title></title>
+  <style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+  #canvas {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%; 
+  }
+  </style>
 </head>
 <body>
-hello world
-<img src="images/cloudy.png" alt="" width="50px">
+<!-- hello world
+<img src="images/cloudy.png" alt="" width="50px"> -->
 <div id="canvas">
   <canvas id="thecanvas" width="1000px" height="1000px"></canvas>
 </div>
@@ -22,11 +36,10 @@ hello world
   /*console.log(smValue);
   console.log("*************new test*************");*/
   var line = mVas.line();
-  var cloudy = mVas.images("images/plane.png",{width:100,height:100});
-  console.log(cloudy);
+  var cat = mVas.images("images/cat1.png",{width:100,height:100});
+  // console.log(cloudy);
   var apple = mVas.text("hello apple",{help:"smth"});
   var ball = mVas.text("hello ball",{help:"smth"});
-  var cat = mVas.text("hello cat",{help:"smth"});
   // newCanvas.add(apple,100,1);
   // newCanvas.add(ball,10,100);
   // newCanvas.add(cloudy,100,100);
@@ -38,33 +51,24 @@ hello world
   //     objRotate : true,
   //     loop: true});
   newCanvas.addAnimation(apple,{ type : "circle",
-      radius : 200,
+      radius : 150,
       startAngle: 0,
       endAngle : 360,
-      speed : 10,
+      speed : 5,
       objRotate : true,
-      referencePoint : {x:400,y:400},
+      referencePoint : {x:300,y:200},
       loop: true});
 
   newCanvas.addAnimation(ball,{ type : "circle",
-      radius : 200,
+      radius : 170,
       startAngle: 0,
       endAngle : 360,
       speed : 2,
       objRotate : true,
-      referencePoint : {x:400,y:400},
+      referencePoint : {x:200,y:200},
       loop: true});
 
   newCanvas.addAnimation(cat,{ type : "circle",
-      radius : 100,
-      startAngle: 0,
-      endAngle : 360,
-      speed : 10,
-      objRotate : true,
-      referencePoint : {x:400,y:400},
-      loop: true});
-
-  newCanvas.addAnimation(cloudy,{ type : "circle",
       radius : 100,
       startAngle: 0,
       endAngle : 360,
@@ -73,7 +77,7 @@ hello world
       referencePoint : {x:200,y:200},
       loop: true});
 
-  var cow = [];
+  // var cow = [];
   /*for (var i = 0; i < 100; i++) {
     cow[i] = mVas.text("hello cow "+i,{help:"smth"});
     newCanvas.addAnimation(cow[i],{ type : "circle",
