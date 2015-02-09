@@ -422,9 +422,13 @@
                     // console.log("counter "+animateObj.counter);
                 };
                 counter++;
+
+                var setter = function () {
+                    setTimeout(looper,timeToChangeFrame);
+                }
                 // if (counter<300) {
                     // setTimeout(function () {
-                        requestAnimationFrame(looper);
+                        requestAnimationFrame(setter);
                     // }, 500);
 
                 // };
