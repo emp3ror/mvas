@@ -294,10 +294,13 @@
         /* time to draw on canvas
         */
         draw : function (showConsole) {
+            // var self = this;
+            this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
             var drawArray = this.drawArray;
             var len = drawArray.length;
             for (var i = 0; i < len; i++) {
                 var theObj = drawArray[i];
+                console.log(theObj);
                 if (typeof showConsole != 'undefined' && showConsole===true) {
                     console.log(theObj);
                 };
@@ -305,6 +308,7 @@
                 var self = this.ctx;
                 var img = null;
                 self.save();
+                self.setTransform(1,0,0,1,0,0);
                     switch (theObj.type) {
                         case "text":
                             drawText(theObj,self);
@@ -312,9 +316,12 @@
 
                         case "image":
                             img = new Image();
+                            img.onload = function () {
+                                theObj.src = img;
+                                drawImage(theObj,self);
+                            }
                             img.src=theObj.src;
-                            theObj.src = img;
-                            drawImage(theObj,self);
+
                         break
                     }
 
@@ -363,6 +370,9 @@
                     loop : obj2.loop,
                     ref : obj2.referencePoint
                 };
+                if (typeof obj2.rotate !== 'undefined') {
+                    obj1.animate.rotate = obj2.rotate;
+                };
                 break;
             };
             if (typeof callback === 'function') {
@@ -405,13 +415,16 @@
                     }
 
                     if (animateObj.counter>=animateObj.animate.path.length-1 && !animateObj.animate.loop) {
-                        console.log(typeof animateObj.callback);
+                        // console.log(typeof animateObj.callback);
                         if (typeof animateObj.callback === 'function') {animateObj.callback()};
                         // self.animateArray.splice(i,1);
                     } else {
                         self.ctx.save();
                         var ref = animateObj.animate.ref;
                         self.ctx.translate(getPixel(ref.x),getPixel(ref.y));
+                        if (typeof animateObj.animate.rotate !== 'undefined') {
+                            animateObj.animate.path[animateObj.counter].angle = animateObj.animate.rotate;
+                        };
                         drawIt(self.ctx,animateObj.src,animateObj.width,animateObj.height, animateObj.type,animateObj.animate.path[animateObj.counter],animateObj.animate.objRotate);
                         self.ctx.restore();
                         if (counter%animateObj.animate.speed==0) {
@@ -591,7 +604,7 @@
 
     };
 
-    //Bézier curve 
+    //Bézier curve
     var pathOnBenzierCurve = function (p1,p2,p3,p4,steps) {
         var cx = 3 * (p2.x - p1.x),
             bx = 3 *(p3.x - p2.x) - cx,
@@ -622,6 +635,10 @@
 
     mVas.pathOnBenzierCurve = function (p1,p2,p3,p4,steps) {
         return pathOnBenzierCurve(p1,p2,p3,p4,steps);
+    };
+
+    mVas.pathOnCircle = function (radius,startAngle,endAngle) {
+        return pathOnCircle (radius,startAngle,endAngle);
     }
 
     /*function drawRectangle(myRectangle, context) {
