@@ -322,7 +322,9 @@
                             }
                             img.src=theObj.src;
 
-                        break
+                            theObj.src = img;
+                            drawImage(theObj,self);
+                        break;
                     }
 
                 self.restore();
@@ -459,7 +461,6 @@
     */
     var drawIt = function (ctx,src,w,h,type,path,objrotate) {
         var self = ctx;
-
         var obj = {
             src : src,
             w : w,
