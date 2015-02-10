@@ -338,7 +338,7 @@
                   speed : 4, //bigger = slower
                   objRotate : true,
                   loop: true*/
-                this.animate = {path : pathOnCircle(obj.radius,obj.startAngle,obj.endAngle),
+                this.animate = {path : getPath.circle(obj.radius,obj.startAngle,obj.endAngle),
                     speed : obj.speed,
                     objRotate : obj.objRotate,
                     loop : obj.loop
@@ -355,7 +355,7 @@
             console.log(obj2.type);
             switch (obj2.type) {
                 case 'circle' :
-                    obj1.animate = {path : pathOnCircle(obj2.radius,obj2.startAngle,obj2.endAngle),
+                    obj1.animate = {path : getPath.circle(obj2.radius,obj2.startAngle,obj2.endAngle),
                         speed : obj2.speed,
                         objRotate : obj2.objRotate,
                         loop : obj2.loop,
@@ -553,93 +553,85 @@
         self.restore();
     };
 
-    var pathOnCircle = function (radius,startAngle,endAngle) {
-        var r = radius;
-        if (typeof radius === 'undefined') {
-            r = 100;
-        } else {
-            r = radius;
-        };
-        if (typeof startAngle === 'undefined') {
-            startAngle = 0;
-        };
-        if (typeof endAngle === 'undefined') {
-            endAngle = 0;
-        };
+    //
+    var getPath = {
+        circle : function (radius,startAngle,endAngle) {
+            var r = radius;
+            if (typeof radius === 'undefined') {
+                r = 100;
+            } else {
+                r = radius;
+            };
+            if (typeof startAngle === 'undefined') {
+                startAngle = 0;
+            };
+            if (typeof endAngle === 'undefined') {
+                endAngle = 0;
+            };
 
-        var coordinates = [];
-        for (var i = startAngle; i <=endAngle; i++) {
-            var angle= i*Math.PI/180;
+            var coordinates = [];
+            for (var i = startAngle; i <=endAngle; i++) {
+                var angle= i*Math.PI/180;
             /*  x = r*Math.cos(angle); getting x on circle
                 y = r*Math.sin(angle); getting y on circle
-            */
-            coordinates.push({x : r*Math.cos(angle),y : r*Math.sin(angle), angle : angle});
-        };
-        return coordinates;
-    };
-
-    var pathOnLine = function (x1,y1,x2,y2,step) {
-        var speed = step,
+                */
+                coordinates.push({x : r*Math.cos(angle),y : r*Math.sin(angle), angle : angle});
+            };
+            return coordinates;
+        },
+        line : function (x1,y1,x2,y2,step) {
+            var speed = step,
             dx = x2-x1,
             dy = y2-y1;
 
-        var distance = Math.sqrt(dx*dx+dy*dy);
-        var moves = distance/speed;
-        var xunits = dx/moves,
+            var distance = Math.sqrt(dx*dx+dy*dy);
+            var moves = distance/speed;
+            var xunits = dx/moves,
             yunits = dy/moves;
-        var path = [];
-        console.log(moves);
-        var xCalc = x1, yCalc = y1;
-        for (var i = 0; i < moves; i++) {
+            var path = [];
+            console.log(moves);
+            var xCalc = x1, yCalc = y1;
+            for (var i = 0; i < moves; i++) {
 
-            path.push({
-                x : xCalc,
-                y : yCalc
-            });
-            xCalc += xunits;
-            yCalc += yunits;
-        };
+                path.push({
+                    x : xCalc,
+                    y : yCalc
+                });
+                xCalc += xunits;
+                yCalc += yunits;
+            };
 
-        return path;
+            return path;
 
-    };
+        },
 
-    //Bézier curve
-    var pathOnBenzierCurve = function (p1,p2,p3,p4,steps) {
-        var cx = 3 * (p2.x - p1.x),
+        //Bézier curve
+        benzierCurve : function (p1,p2,p3,p4,steps) {
+            var cx = 3 * (p2.x - p1.x),
             bx = 3 *(p3.x - p2.x) - cx,
             ax = p4.x - p1.x - cx - bx,
             cy = 3 * (p2.y - p1.y),
             by = 3 * (p3.y - p2.y) - cy,
             ay = p4.y - p1.y - cy - by;
 
-        if (typeof steps === undefined || typeof steps !== 'number') {
-            steps = 0.01;
-        } else {
-            steps = steps/1000;
+            if (typeof steps === undefined || typeof steps !== 'number') {
+                steps = 0.01;
+            } else {
+                steps = steps/1000;
+            }
+            var paths = [];
+            console.log(steps);
+            for (var t = 0; t < 1; t=t+steps) {
+                console.log("mm "+t);
+                var xt = ax*(t*t*t) + bx*(t*t) + cx*t + p1.x;
+                var yt = ay*(t*t*t) + by*(t*t) + cy*t + p1.y;
+                paths.push({x: xt,y: yt});
+            };
+            return paths;
         }
-        var paths = [];
-        console.log(steps);
-        for (var t = 0; t < 1; t=t+steps) {
-            console.log("mm "+t);
-            var xt = ax*(t*t*t) + bx*(t*t) + cx*t + p1.x;
-            var yt = ay*(t*t*t) + by*(t*t) + cy*t + p1.y;
-            paths.push({x: xt,y: yt});
-        };
-        return paths;
-    }
-
-    mVas.pathOnLine = function (x1,y1,x2,y2,step) {
-        return pathOnLine(x1,y1,x2,y2,step);
     };
-
-    mVas.pathOnBenzierCurve = function (p1,p2,p3,p4,steps) {
-        return pathOnBenzierCurve(p1,p2,p3,p4,steps);
-    };
-
-    mVas.pathOnCircle = function (radius,startAngle,endAngle) {
-        return pathOnCircle (radius,startAngle,endAngle);
-    }
+    mVas.getPath = getPath;
+    //get paths ends
 
     /*function drawRectangle(myRectangle, context) {
         context.beginPath();
