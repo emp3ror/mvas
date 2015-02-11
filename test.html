@@ -6,11 +6,12 @@
 <canvas width="500" height="500" id="canvas"></canvas>
 <img id="canvasImg" alt="Right click to save me!">
 <script type="text/javascript">
+
 	var particle_count = 100;
 	for(var i = 0; i < particle_count; i++)
 	{
 		// particles.push(new particle());
-		console.log("hellow");
+		// console.log("hellow");
 	}
 	var r = 100;
 	var xy1 = [],xy2=[];
@@ -57,7 +58,7 @@
 	img.src = "images/cloudy.png";
 	img.onload = function () {
             ctx.rotate(degrees*Math.PI/180);
-            console.log(mm.x,mm.y);
+            // console.log(mm.x,mm.y);
             ctx.drawImage(img, mm.x, mm.y,50,50);
         }
 
@@ -133,6 +134,10 @@
 		// clearInterval(newInt);
 	}
 	var newInt = setInterval(onCircle,10);
+
+	console.log(Math.round(2.5));
+	console.log(Math.round(2.1));
+	console.log(Math.round(2.6));
 </script>
 
 </body>

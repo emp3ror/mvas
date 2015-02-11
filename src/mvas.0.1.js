@@ -288,47 +288,68 @@
                 w : width,
                 h : height
             });
-            // console.log(this.drawArray);
+            console.log(this.drawArray);
         },
 
         /* time to draw on canvas
         */
         draw : function (showConsole) {
             // var self = this;
-            this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
-            var drawArray = this.drawArray;
-            var len = drawArray.length;
-            for (var i = 0; i < len; i++) {
-                var theObj = drawArray[i];
-                console.log(theObj);
-                if (typeof showConsole != 'undefined' && showConsole===true) {
-                    console.log(theObj);
-                };
-
-                var self = this.ctx;
-                var img = null;
-                self.save();
-                self.setTransform(1,0,0,1,0,0);
+            // this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
+            var self = this.ctx;
+            var drawArray2 = this.drawArray;
+            var len = drawArray2.length;
+            var i = 0;
+            console.log(len);
+            // var img = [];
+            var loopFunc = function () {
+                if (i<len) {
+                    console.log("counter = "+i);
+                    var theObj = drawArray2[i];
+                    var objSrc = theObj.src;
+                    // console.log(objSrc);
+                    if (typeof showConsole != 'undefined' && showConsole===true) {
+                        // console.log(theObj);
+                    };
+                    var img = null;
+                    self.save();
+                    // self.setTransform(1,0,0,1,0,0);
                     switch (theObj.type) {
                         case "text":
-                            drawText(theObj,self);
+                        drawText(theObj,self);
                         break;
 
                         case "image":
+                        if (typeof theObj.src === "object") {
+                            drawImage(theObj,self);
+                            i++;
+                            loopFunc();
+                        } else {
                             img = new Image();
-                            img.onload = function () {
+                            var imgLoaded = function () {
                                 theObj.src = img;
                                 drawImage(theObj,self);
-                            }
-                            img.src=theObj.src;
+                                i++;
+                                loopFunc();
 
-                            theObj.src = img;
-                            drawImage(theObj,self);
+                            };
+                            img.addEventListener('load', imgLoaded , false);
+                            img.src=objSrc;
+                        }
+
+                        // console.log(theObj.src);
+                        // console.log(img);
+
                         break;
-                    }
+                        }
 
-                self.restore();
-            };
+                        self.restore();
+                    };
+                };
+            loopFunc();
+            /*for (var i = 0; i < len; i++) {
+
+            };*/
         },
 
         animate : function (type,obj) {
@@ -634,20 +655,12 @@
     mVas.getPath = getPath;
     //get paths ends
 
-    /*function drawRectangle(myRectangle, context) {
-        context.beginPath();
-        context.rect(myRectangle.x, myRectangle.y, myRectangle.width, myRectangle.height);
-        context.fillStyle = '#8ED6FF';
-        context.fill();
-        context.lineWidth = myRectangle.borderWidth;
-        context.strokeStyle = 'black';
-        context.stroke();
-      }*/
-
     /* returns calculated pixel for the provided num according to grid smallbox size
     */
     var getPixel = function (num) {
         return num*grid.boxlength;
+        // it is said rounded value will make it low wt in rendering but doesnt looks smooth :(
+        // return Math.round(num*grid.boxlength);
     }
 
     var radian = function (degree) {
