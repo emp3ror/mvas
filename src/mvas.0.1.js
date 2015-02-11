@@ -84,6 +84,7 @@
     mVas.fn = {
 
         drawArray : [],
+        staticDrawCount : 0,
         animateArray : [],
         animationLoop : false,
         //init get id and set canvas and context (ctx)
@@ -291,6 +292,12 @@
             console.log(this.drawArray);
         },
 
+        clearStaticDraw : function () {
+            this.staticDrawCount = 0;
+            this.drawArray = [];
+            this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
+        },
+
         /* time to draw on canvas
         */
         draw : function (showConsole) {
@@ -299,7 +306,8 @@
             var self = this.ctx;
             var drawArray2 = this.drawArray;
             var len = drawArray2.length;
-            var i = 0;
+            var i = this.staticDrawCount;
+            this.staticDrawCount = len;
             console.log(len);
             // var img = [];
             var loopFunc = function () {
@@ -313,7 +321,7 @@
                     };
                     var img = null;
                     self.save();
-                    // self.setTransform(1,0,0,1,0,0);
+                    self.setTransform(1,0,0,1,0,0);
                     switch (theObj.type) {
                         case "text":
                         drawText(theObj,self);
