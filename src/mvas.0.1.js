@@ -277,19 +277,50 @@
         line : function () {
 
         },
+        circle : function (obj) {
+            if (typeof obj ==='undefined') {var obj = {}};
+            console.log(obj.x);
+            var getObj = {
+                type : "circle",
+                x : typeof obj.x === 'undefined' ? 10 : obj.x,
+                y : typeof obj.y === 'undefined' ? 10 : obj.y,
+                radius : typeof obj.radius === 'undefined' ? 10 : obj.radius,
+                direction : typeof obj.direction === 'undefined' || obj.direction==='clockwise' ? false : true,
+                fillStyle :  typeof obj.fillStyle === 'undefined' ? null : obj.fillStyle,
+                strokeStyle :  typeof obj.strokeStyle === 'undefined' ? null : obj.strokeStyle,
+            };
+
+            return getObj;
+
+            // console.log(getObj);
+            // context.arc(obj.x, obj.y, obj.radius, 0, 2 * Math.PI, obj.direction);
+        },
 
         /* filling draw array
         */
         add : function (obj,posX,posY,width,height) {
-            this.drawArray.push({
-                src : obj.src,
-                type : obj.type,
-                x : posX,
-                y : posY,
-                w : width,
-                h : height
-            });
-            console.log(this.drawArray);
+            switch (obj.type) {
+                case "image" :
+                this.drawArray.push({
+                    src : obj.src,
+                    type : obj.type,
+                    x : posX,
+                    y : posY,
+                    w : width,
+                    h : height
+                });
+                break;
+                case "circle" :
+                // console.log("here i reached");
+                this.drawArray.push({
+                    obj : obj,
+                    type : obj.type,
+                    x : posX,
+                    y : posY,
+                });
+            }
+
+            // console.log(this.drawArray);
         },
 
         clearStaticDraw : function () {
@@ -308,16 +339,16 @@
             var len = drawArray2.length;
             var i = this.staticDrawCount;
             this.staticDrawCount = len;
-            console.log(len);
+            // console.log(len);
             // var img = [];
             var loopFunc = function () {
                 if (i<len) {
-                    console.log("counter = "+i);
+                    // console.log("counter = "+i);
                     var theObj = drawArray2[i];
                     var objSrc = theObj.src;
                     // console.log(objSrc);
                     if (typeof showConsole != 'undefined' && showConsole===true) {
-                        // console.log(theObj);
+                        console.log(theObj);
                     };
                     var img = null;
                     self.save();
@@ -325,6 +356,15 @@
                     switch (theObj.type) {
                         case "text":
                         drawText(theObj,self);
+                        i++;
+                        loopFunc();
+                        break;
+
+                        case "circle":
+                        // console.log("on switch");
+                        drawCircle(theObj,self);
+                        i++;
+                        loopFunc();
                         break;
 
                         case "image":
@@ -583,6 +623,30 @@
         self.restore();
     };
 
+    var drawCircle = function (obj, context) {
+        // console.log(obj);
+        var obj1 = obj.obj;
+        context.setTransform(1,0,0,1,0,0);
+        context.translate(getPixel(obj.x),getPixel(obj.y));
+        context.beginPath();
+        context.arc(obj1.x, obj1.y, obj1.radius, 0, 2 * Math.PI, obj1.direction);
+        // console.log(obj1.fillStyle);
+        if (typeof obj1.fillStyle !== 'undefined') {
+            context.fillStyle = obj1.fillStyle;
+        };
+
+        context.fill();
+        if (typeof obj1.lineWidth !== 'undefined') {
+            context.lineWidth = obj1.lineWidth;
+            // context.lineWidth = 5;
+        };
+
+        if (typeof obj1.strokeStyle !== 'undefined') {
+            context.strokeStyle = obj1.strokeStyle;
+        };
+        context.stroke();
+    };
+
     //
     var getPath = {
         circle : function (radius,startAngle,endAngle) {
@@ -703,6 +767,10 @@
     }
     mVas.line = function () {
         return new mVas.fn.line ();
+    }
+
+    mVas.circle = function (obj) {
+        return new mVas.fn.circle (obj);
     }
 
     mVas.animate = function (type,obj) {
