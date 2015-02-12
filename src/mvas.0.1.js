@@ -700,7 +700,7 @@
         },
 
         //Bézier curve
-        benzierCurve : function (p1,p2,p3,p4,steps) {
+        bezierCurve : function (p1,p2,p3,p4,steps) {
             var cx = 3 * (p2.x - p1.x),
             bx = 3 *(p3.x - p2.x) - cx,
             ax = p4.x - p1.x - cx - bx,
