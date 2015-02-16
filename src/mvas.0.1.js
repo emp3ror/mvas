@@ -1,4 +1,4 @@
-/*!
+/* //# sourceURL=js/canvas/mvas.js
  * Author : manish jung thapa (will be expecting more help :D )
  * https://github.com/emp3ror/mvas
  * tuts will be here : http://mjt.com.com/ ;)
@@ -279,7 +279,7 @@
         },
         circle : function (obj) {
             if (typeof obj ==='undefined') {var obj = {}};
-            console.log(obj.x);
+            // console.log(obj.x+" "+obj.y);
             var getObj = {
                 type : "circle",
                 x : typeof obj.x === 'undefined' ? 10 : obj.x,
@@ -453,11 +453,27 @@
             this.animateArray.push(obj1);
         },
 
-        startAnimation : function () {
+        /*clear animation*/
+        clearAnimation : function () {
+            // this.staticDrawCount = 0;
+            this.animateArray = [];
+            this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
+        },
+
+        startAnimation : function (pass1,pass2) {
             var self = this;
             var counter = 0;
             var reset = true;
-
+            var timer = null, callback = null;
+            if (typeof pass1 === "number") {
+                timer = pass1;
+            } else if (typeof pass1 === "function") {
+                callback = pass1;
+            };
+            if (typeof pass2 === "function") {
+                callback = pass2;
+            };
+            var startTime = new Date().getTime();
             var img = [];  //trying image to work
             function looper () {
                 self.ctx.clearRect(0,0,self.canvasWidth,self.canvasHeight);
@@ -510,13 +526,16 @@
                 var setter = function () {
                     setTimeout(looper,timeToChangeFrame);
                 }
-                // if (counter<300) {
-                    // setTimeout(function () {
+
+                console.log(typeof timer);
+                if (typeof timer != 'undefined' && typeof timer === 'number') {
+                    var newTime = new Date().getTime();
+                    if (timer>(newTime-startTime )) {
                         requestAnimationFrame(setter);
-                    // }, 500);
-
-                // };
-
+                    } else if (typeof callback === 'function') {callback();};
+                } else {
+                    requestAnimationFrame(setter);
+                };
             }
 
             looper();
@@ -627,6 +646,8 @@
         // console.log(obj);
         var obj1 = obj.obj;
         context.setTransform(1,0,0,1,0,0);
+        // context.translate(100,100);
+        // console.log(getPixel(obj.x),getPixel(obj.y));
         context.translate(getPixel(obj.x),getPixel(obj.y));
         context.beginPath();
         context.arc(obj1.x, obj1.y, obj1.radius, 0, 2 * Math.PI, obj1.direction);
@@ -699,7 +720,7 @@
 
         },
 
-        //Bézier curve
+        //Bézier curve bezierCurve benzierCurve
         bezierCurve : function (p1,p2,p3,p4,steps) {
             var cx = 3 * (p2.x - p1.x),
             bx = 3 *(p3.x - p2.x) - cx,
