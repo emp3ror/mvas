@@ -122,6 +122,17 @@ canvas2.addAnimation(meteoroid,{ type : "path",
   // newCanvas.add(line,100,100);
   newCanvas.draw(true);
 
+
+  /*testing how plugins are created*/
+  (function (mVas) {
+      mVas.fn.justAlert = function(text) {
+        alert("whats the "+text);
+      };
+    })(mVas)
+
+    // mVas.fn.justAlert("mjt");
+    newCanvas.justAlert("from canvas");
+
 </script>
 </body>
 </html>

@@ -301,6 +301,11 @@
         add : function (obj,posX,posY,width,height) {
             switch (obj.type) {
                 case "image" :
+                if (typeof obj.width !='undefined' && typeof width === 'undefined') {
+                    width = obj.width;
+                    height = obj.height;
+                    console.log(width);
+                };
                 this.drawArray.push({
                     src : obj.src,
                     type : obj.type,
