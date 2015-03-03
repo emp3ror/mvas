@@ -288,6 +288,7 @@
                 direction : typeof obj.direction === 'undefined' || obj.direction==='clockwise' ? false : true,
                 fillStyle :  typeof obj.fillStyle === 'undefined' ? null : obj.fillStyle,
                 strokeStyle :  typeof obj.strokeStyle === 'undefined' ? null : obj.strokeStyle,
+                lineWidth :  typeof obj.lineWidth === 'undefined' ? null : obj.lineWidth,
             };
 
             return getObj;
@@ -626,7 +627,7 @@
             self.drawImage(img, -w/2, -h/2,w,h);
         } catch (err) {
             console.log(err);
-            alert("smth");
+            alert("smth went wrong "+img+"  "+err);
         }
 
         self.restore();
@@ -667,6 +668,7 @@
             // context.lineWidth = 5;
         };
 
+        // context.lineWidth = 0;
         if (typeof obj1.strokeStyle !== 'undefined') {
             context.strokeStyle = obj1.strokeStyle;
         };
